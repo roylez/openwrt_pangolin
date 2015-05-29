@@ -29,7 +29,8 @@ shadowsocks服务器IP_。
 
 1. 安装pdnsd和shadowsocks，pdns可以直接用`opkg install pdnsd`安装，但是shadowsocks请自行[下载][2]
 
-2. 编辑`etc/shadowsocks.json`，**填入你的shadowsocks的服务器相关信息**
+2. 编辑`etc/shadowsocks.json`，**填入你的shadowsocks的服务器相关信息**，注意如果你更改了本地端口，
+那么在`firewall.user`中也要做出相应修改，一般说来你不需要修改本地端口。
 
 3. 编辑`etc/firewall.user`，**填入你的shadowsocksd的服务器IP**
 
