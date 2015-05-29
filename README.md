@@ -27,7 +27,7 @@ shadowsocks服务器IP_。
 安装
 ========
 
-1. 安装pdnsd和shadowsocks，pdns可以直接用`opkg install pdnsd`安装，但是shadowsocks请自行[下载][1]
+1. 安装pdnsd和shadowsocks，pdns可以直接用`opkg install pdnsd`安装，但是shadowsocks请自行[下载][2]
 
 2. 编辑`etc/shadowsocks.json`，**填入你的shadowsocks的服务器相关信息**
 
@@ -41,17 +41,13 @@ shadowsocks服务器IP_。
 
 6. 拷贝文件到你的openwrt路由器，注意要用`-p`保留文件权限
 
-        ```
         scp -rp etc root root@OPENWRT_ADDRESS:/
-        ```
 
 7. 确保`firewall`,`pdnsd`,`shadowsocks`在启动时自动运行
 
-        ```
         /etc/init.d/firewall enable
         /etc/init.d/pdnsd enable
         /etc/init.d/shadowsocks enable
-        ```
 
 8. 重启动路由器，可以拔电源或者登陆后运行`reboot`。
 
