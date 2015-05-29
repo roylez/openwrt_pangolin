@@ -29,25 +29,31 @@ shadowsocks服务器IP_。
 
 1. 安装pdnsd和shadowsocks，pdns可以直接用`opkg install pdnsd`安装，但是shadowsocks请自行[下载][1]
 
-2. 编辑`etc/shadowsocks.json`，*填入你的shadowsocks的服务器相关信息*
+2. 编辑`etc/shadowsocks.json`，**填入你的shadowsocks的服务器相关信息**
 
-3. 编辑`etc/config/network.router`，*填入你从ISP获得的拨号账号与密码*
+3. 编辑`etc/firewall.user`，**填入你的shadowsocksd的服务器IP**
 
-4. （可选）编辑`etc/config/wireless.ap`和`etc/config/wireless.router`，更改WIFI SSID和密码；默认在router模式下SSID为
+4. 编辑`etc/config/network.router`，**填入你从ISP获得的拨号账号与密码**
+
+5. （可选）编辑`etc/config/wireless.ap`和`etc/config/wireless.router`，更改WIFI SSID和密码；默认在router模式下SSID为
 “**穿山甲**”，在AP模式下为“**游走的穿山甲**”，密码均为**88888888**。你可以把两个SSID都设成一样，但是这样会不太方便区分路由器运行在
 什么模式下
 
-5. 拷贝文件到你的openwrt路由器
+6. 拷贝文件到你的openwrt路由器，注意要用`-p`保留文件权限
+
 
     scp -rp etc root root@OPENWRT_ADDRESS:/
 
-6. 确保`firewall`,`pdnsd`,`shadowsocks`在启动时自动运行
+
+7. 确保`firewall`,`pdnsd`,`shadowsocks`在启动时自动运行
+
 
     /etc/init.d/firewall enable
     /etc/init.d/pdnsd enable
     /etc/init.d/shadowsocks enable
 
-7. 重启动路由器，可以拔电源或者登陆后运行`reboot`。
+
+8. 重启动路由器，可以拔电源或者登陆后运行`reboot`。
 
 
 [1]: https://gist.github.com/zts1993/dca7c062a520396d3091
