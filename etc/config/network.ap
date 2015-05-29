@@ -1,0 +1,22 @@
+
+config interface 'loopback'
+	option ifname 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option ula_prefix 'fdb9:beef:8a21::/48'
+
+# wired connection as dhcp client
+config interface 'lan'
+	option ifname 'eth0'
+	option proto dhcp
+	option type bridge
+
+# wifi interface static as gateway wireless clients
+config interface 'wlan'
+	option ifname 'wlan0'
+	option proto 'static'
+	option ipaddr '10.10.10.1'
+	option netmask '255.255.255.0'

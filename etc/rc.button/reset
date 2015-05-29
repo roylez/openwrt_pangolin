@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Only run on button release.
+[[ "${ACTION}" = "released" ]] || exit 0
+
+PATH="$PATH:/root/bin/"
+
+. /lib/functions.sh
+
+logger "$BUTTON pressed for $SEEN seconds"
+# env >> /tmp/reset-button
+
+console_log() {
+    echo "$*" > /dev/console
+    logger "$*"
+}
+
+if [[ "$SEEN" -le 1 ]] ; then
+    MESSAGE="RESET BUTTON: toggle between ROUTER and AP mode"
+    console_log "$MESSAGE"
+    toggle_ap.sh && ifup -a &
+elif [[ "$SEEN" -ge 9 -a "$SEEN" -le 12 ]] ; then
+    MESSAGE="RESET BUTTON: Wipe overlay (factory reset) and reboot"
+    console_log "$MESSAGE"
+    jffs2reset -y && reboot &
+else
+    MESSAGE="RESET BUTTON: Error. Pressed for $SEEN seconds. Do nothing."
+    console_log "$MESSAGE"
+fi

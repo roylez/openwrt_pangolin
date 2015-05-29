@@ -1,0 +1,26 @@
+
+config interface 'loopback'
+	option ifname 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option ula_prefix 'fdb9:beef:8a21::/48'
+
+# wired connection to do pppoe login
+config interface 'lan'
+	option type bridge
+        option 'ifname' 'eth0'
+        option 'proto' 'pppoe'
+        option 'username' 'DIAL_IN_ACCOUNT'
+        option 'password' 'DIAL_IN_PASSWORD'
+        option 'peerdns' '1'
+        option 'defaultroute' '1'
+
+# wifi interface static as gateway wireless clients
+config interface 'wlan'
+	option ifname 'wlan0'
+	option proto 'static'
+	option ipaddr '10.10.10.1'
+	option netmask '255.255.255.0'

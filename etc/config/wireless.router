@@ -1,0 +1,18 @@
+
+config wifi-device 'wlan0'
+	option type 'mac80211'
+	option hwmode '11g'
+	option path 'platform/ar933x_wmac'
+	option htmode 'HT20'
+	option channel '8'
+	option txpower '30'
+	option country 'US'
+
+config wifi-iface
+	option device 'wlan0'
+	option network 'wlan'
+	option mode 'ap'
+	option ssid '穿山甲'
+	option encryption 'psk2+tkip+ccmp'
+	option key '88888888'
+

@@ -1,0 +1,8 @@
+{
+    "server": "SHADOWSOCKS_SERVER_IP",
+    "server_port": 8388,
+    "local_port": 1080,
+    "password": "gfw",
+    "timeout": 60,
+    "method": "aes-256-cfb"
+}
