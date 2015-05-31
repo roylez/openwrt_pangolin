@@ -4,6 +4,7 @@
 [[ "${ACTION}" = "released" ]] || exit 0
 
 PATH="$PATH:/root/bin/"
+LED_CONTROL=/sys/devices/platform/leds-gpio/leds/tp-link:blue:system
 
 . /lib/functions.sh
 
@@ -15,14 +16,36 @@ console_log() {
     logger "$*"
 }
 
+led_on() {
+    echo none > $LED_CONTROL/trigger
+    echo 1 > $LED_CONTROL/brightness
+}
+
+led_off() {
+    echo none > $LED_CONTROL/trigger
+    echo 0 > $LED_CONTROL/brightness
+}
+
+# timer value should be no more than 255, the smaller the value,
+# the faster it blinks
+# led_blink timer_on timer_off
+led_blink() {
+    echo timer > $LED_CONTROL/trigger
+    echo $1 > $LED_CONTROL/delay_on
+    echo $2 > $LED_CONTROL/delay_off
+}
+
 if [[ "$SEEN" -le 1 ]] ; then
     MESSAGE="RESET BUTTON: toggle between ROUTER and AP mode"
     console_log "$MESSAGE"
     toggle_ap.sh && ifup -a &
+    led_blink 80 80
+    sleep 2
+    led_on
 elif [[ "$SEEN" -ge 9 -a "$SEEN" -le 12 ]] ; then
     MESSAGE="RESET BUTTON: Wipe overlay (factory reset) and reboot"
     console_log "$MESSAGE"
-    jffs2reset -y && reboot &
+    firstboot && reboot -f &
 else
     MESSAGE="RESET BUTTON: Error. Pressed for $SEEN seconds. Do nothing."
     console_log "$MESSAGE"
