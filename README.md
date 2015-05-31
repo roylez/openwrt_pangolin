@@ -5,15 +5,15 @@
 * 两种工作模式用轻触reset切换。
 * 两种工作模式下均可以自动科学上网。
 * 子网段为`10.10.10.0/24`，不太容易跟上级路由冲突。
-* **针对TL703N所定制**，原理适用于其他任何兼容openwrt的路由器，原则上只要各个interface的名字在配置文件中没有对应错误，即可同样使用。
+* **针对TL-WR703N所定制**，原理适用于其他任何兼容openwrt的路由器，原则上只要各个interface的名字在配置文件中没有对应错误，即可同样使用。
 
 原理
 ========
 
-这里记录了我在`tl703n`上用部署无痛自动翻墙路由的配置。对于GFW的两种屏蔽方式分别做了如下处理：
+这里记录了我在`TL-WR703N`上用部署无痛自动翻墙路由的配置。对于GFW的两种屏蔽方式分别做了如下处理：
 
 **DNS污染**：由于目前GFW的DNS污染完全是针对UDP，所以只需要用pdnsd去查询一个境外未被污染的支持TCP查询的DNS即可。
-这里我用的是opendns。因为dnsmaq可以对DNS查询进行缓存，所以我并没有对于国内国外IP分别用不同的DNS，速度上影响不大，
+这里我用的是Google和opendns。因为dnsmaq可以对DNS查询进行缓存，所以我并没有对于国内国外IP分别用不同的DNS，速度上影响不大，
 但是配置可以简单很多。
 
 如果你需要换用其他的DNS，请用下面的命令测试是否支持TCP查询：
@@ -21,13 +21,12 @@
     dig @8.8.8.8 +tcp twitter.com
 
 **IP屏蔽**：对于IP屏蔽，一般的做法是用VPN或者代理。因为shadowsocks最简单，所以这里用shadowsocks。用iptables对于国内IP
-和国外IP分别处理，用了[精简过的瓷器国IP列表][1]。如果需要自己生成iptables规则，可以用`gen_gfw_rules.sh`，_请注意填入自己
-shadowsocks服务器IP_。
+和国外IP分别处理，用了[精简过的瓷器国IP列表][1]。*如果需要自己生成IP列表，可以用`gen_china_list.sh`，并拷贝到/etc*。
 
 安装
 ========
 
-1. 安装pdnsd和shadowsocks，pdns可以直接用`opkg install pdnsd`安装，但是shadowsocks请自行[下载][2]
+1. 安装pdnsd、ipset和shadowsocks，pdns/ipset可以直接用`opkg install pdnsd ipset`安装，但是shadowsocks请自行[下载][2]
 
 2. 编辑`etc/shadowsocks.json`，**填入你的shadowsocks的服务器相关信息**，注意如果你更改了本地端口，
 那么在`firewall.user`中也要做出相应修改，一般说来你不需要修改本地端口。
