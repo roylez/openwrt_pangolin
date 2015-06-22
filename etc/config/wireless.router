@@ -1,10 +1,18 @@
 config wifi-device  radio0
+        # http://w1.fi/cgit/hostap/tree/hostapd/hostapd.conf
 	option type     mac80211
-	option channel  11
-	option hwmode	11g
+	option hwmode	11ng
+        option channel  11
 	option path	'10180000.wmac'
-	option htmode	HT20
-	# REMOVE THIS LINE TO ENABLE WIFI:
+	option htmode	HT40
+	option noscan   1
+	option txpower  27
+	option country  00
+	list ht_capab   'SHORT-GI-40'
+	list ht_capab   'SHORT-GI-20'
+	list ht_capab   'TX-STBC'
+	list ht_capab   'RX-STBC12'
+        # REMOVE THIS LINE TO ENABLE WIFI:
 	# option disabled 1
 
 config wifi-iface
