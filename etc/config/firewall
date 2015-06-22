@@ -14,27 +14,28 @@ config zone
 	option forward		ACCEPT
 
 config zone
-	option name 		wlan
-	list   network 		"wlan"
-	list   network 		"lan"
-	option input		ACCEPT
+	option name		wan
+	list   network		'wan'
+	list   network		'wan6'
+	option input		REJECT
 	option output		ACCEPT
 	option forward		REJECT
-	option masq 		1
-
-config forwarding
-	option src 		wlan
-	option dest		lan
+	option masq		1
+	option mtu_fix		1
 
 config forwarding
 	option src		lan
-	option dest 		wlan
+	option dest		wan
+
+config forwarding
+	option src		wan
+	option dest		lan
 
 # We need to accept udp packets on port 68,
 # see https://dev.openwrt.org/ticket/4108
 config rule
 	option name		Allow-DHCP-Renew
-	option src		wlan
+	option src		wan
 	option proto		udp
 	option dest_port	68
 	option target		ACCEPT
@@ -43,9 +44,16 @@ config rule
 # Allow IPv4 ping
 config rule
 	option name		Allow-Ping
-	option src		wlan
+	option src		wan
 	option proto		icmp
 	option icmp_type	echo-request
+	option family		ipv4
+	option target		ACCEPT
+
+config rule
+	option name		Allow-IGMP
+	option src		wan
+	option proto		igmp
 	option family		ipv4
 	option target		ACCEPT
 
@@ -53,7 +61,7 @@ config rule
 # see https://dev.openwrt.org/ticket/10381
 config rule
 	option name		Allow-DHCPv6
-	option src		wlan
+	option src		wan
 	option proto		udp
 	option src_ip		fe80::/10
 	option src_port		547
@@ -62,10 +70,22 @@ config rule
 	option family		ipv6
 	option target		ACCEPT
 
+config rule
+	option name		Allow-MLD
+	option src		wan
+	option proto		icmp
+	option src_ip		fe80::/10
+	list icmp_type		'130/0'
+	list icmp_type		'131/0'
+	list icmp_type		'132/0'
+	list icmp_type		'143/0'
+	option family		ipv6
+	option target		ACCEPT
+
 # Allow essential incoming IPv6 ICMP traffic
 config rule
 	option name		Allow-ICMPv6-Input
-	option src		wlan
+	option src		wan
 	option proto	icmp
 	list icmp_type		echo-request
 	list icmp_type		echo-reply
@@ -85,7 +105,7 @@ config rule
 # Allow essential forwarded IPv6 ICMP traffic
 config rule
 	option name		Allow-ICMPv6-Forward
-	option src		wlan
+	option src		wan
 	option dest		*
 	option proto		icmp
 	list icmp_type		echo-request
@@ -105,17 +125,17 @@ config include
 
 
 ### EXAMPLE CONFIG SECTIONS
-# do not allow a specific ip to access wlan
+# do not allow a specific ip to access wan
 #config rule
 #	option src		lan
 #	option src_ip	192.168.45.2
-#	option dest		wlan
+#	option dest		wan
 #	option proto	tcp
 #	option target	REJECT
 
-# block a specific mac on wlan
+# block a specific mac on wan
 #config rule
-#	option dest		wlan
+#	option dest		wan
 #	option src_mac	00:11:22:33:44:66
 #	option target	REJECT
 
@@ -125,18 +145,18 @@ config include
 #	option proto	ICMP
 #	option target	DROP
 
-# port redirect port coming in on wlan to lan
+# port redirect port coming in on wan to lan
 #config redirect
-#	option src			wlan
+#	option src			wan
 #	option src_dport	80
 #	option dest			lan
 #	option dest_ip		192.168.16.235
 #	option dest_port	80
 #	option proto		tcp
 
-# port redirect of remapped ssh port (22001) on wlan
+# port redirect of remapped ssh port (22001) on wan
 #config redirect
-#	option src		wlan
+#	option src		wan
 #	option src_dport	22001
 #	option dest		lan
 #	option dest_port	22
@@ -144,13 +164,13 @@ config include
 
 # allow IPsec/ESP and ISAKMP passthrough
 #config rule
-#	option src		wlan
+#	option src		wan
 #	option dest		lan
 #	option protocol		esp
 #	option target		ACCEPT
 
 #config rule
-#	option src		wlan
+#	option src		wan
 #	option dest		lan
 #	option src_port		500
 #	option dest_port	500
@@ -163,7 +183,7 @@ config include
 #	option src_ip	192.168.45.2
 #	option src_mac	00:11:22:33:44:55
 #	option src_port	80
-#	option dest		wlan
+#	option dest		wan
 #	option dest_ip	194.25.2.129
 #	option dest_port	120
 #	option proto	tcp

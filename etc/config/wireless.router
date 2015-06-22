@@ -1,20 +1,16 @@
-
-config wifi-device 'wlan0'
-	option type 'mac80211'
-	option path 'platform/ar933x_wmac'
-	option hwmode '11ng'
-	option htmode 'HT40+'
-	option noscan 1
-	option txpower '30'
-	option country '00'
-	list ht_capab 'SHORT-GI-40'
-	list ht_capab 'DSSS_CCK-40'
+config wifi-device  radio0
+	option type     mac80211
+	option channel  11
+	option hwmode	11g
+	option path	'10180000.wmac'
+	option htmode	HT20
+	# REMOVE THIS LINE TO ENABLE WIFI:
+	# option disabled 1
 
 config wifi-iface
-	option device 'wlan0'
-	option network 'wlan'
-	option mode 'ap'
-	option ssid '穿山甲'
+	option device   radio0
+	option network  lan
+	option mode     ap
+	option ssid     '穿山甲'
 	option encryption 'psk2+tkip+aes'
-	option key '88888888'
-
+	option key      '88888888'
