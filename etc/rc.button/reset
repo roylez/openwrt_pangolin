@@ -4,7 +4,7 @@
 [[ "${ACTION}" = "released" ]] || exit 0
 
 PATH="$PATH:/root/bin/"
-LED_CONTROL=/sys/devices/platform/leds-gpio/leds/tp-link:blue:system
+LED_CONTROL=/sys/devices/gpio-leds/leds/nexx:blue:power
 
 . /lib/functions.sh
 
@@ -18,12 +18,12 @@ console_log() {
 
 led_on() {
     echo none > $LED_CONTROL/trigger
-    echo 1 > $LED_CONTROL/brightness
+    echo 0 > $LED_CONTROL/brightness
 }
 
 led_off() {
     echo none > $LED_CONTROL/trigger
-    echo 0 > $LED_CONTROL/brightness
+    echo 1 > $LED_CONTROL/brightness
 }
 
 # timer value should be no more than 255, the smaller the value,
