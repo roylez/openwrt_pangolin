@@ -1,0 +1,32 @@
+config wifi-device  radio0
+        # http://w1.fi/cgit/hostap/tree/hostapd/hostapd.conf
+	option type     mac80211
+	option hwmode	11ng
+        option channel  11
+	option path	'10180000.wmac'
+	option htmode	HT40
+	option noscan   1
+	option txpower  20
+	option country  00
+	list ht_capab   'SHORT-GI-40'
+	list ht_capab   'SHORT-GI-20'
+	list ht_capab   'TX-STBC'
+	list ht_capab   'RX-STBC12'
+        # REMOVE THIS LINE TO ENABLE WIFI:
+	# option disabled 1
+
+config wifi-iface
+	option device   radio0
+	option network  lan
+	option mode     ap
+	option ssid     '穿山甲@client'
+	option encryption 'psk2+tkip+aes'
+	option key      '88888888'
+
+config wifi-iface
+        option device   radio0
+        option network  wan
+        option mode     sta
+        option ssid     "UPSTREAM_SSID"
+        option encryption psk2
+        option key      88888888
