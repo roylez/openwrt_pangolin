@@ -9,7 +9,7 @@ config globals 'globals'
 	option ula_prefix 'fdb9:beef:8a21::/48'
 
 # wired connection to do pppoe login
-config interface 'lan'
+config interface 'wan'
 	option type bridge
         option 'ifname' 'eth0'
         option 'proto' 'pppoe'
@@ -19,8 +19,8 @@ config interface 'lan'
         option 'defaultroute' '1'
 
 # wifi interface static as gateway wireless clients
-config interface 'wlan'
-	option ifname 'wlan0'
+config interface 'lan'
+	option ifname 'radio0'
 	option proto 'static'
 	option ipaddr '10.10.10.1'
 	option netmask '255.255.255.0'

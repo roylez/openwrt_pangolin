@@ -17,8 +17,8 @@ config dnsmasq
 	option noresolv '1'
 	list server '127.0.0.1#1053'
 
-config dhcp 'lan'
-	option interface 'lan'
+config dhcp 'wan'
+	option interface 'wan'
 	option start '100'
 	option limit '150'
 	option leasetime '12h'
@@ -27,7 +27,7 @@ config dhcp 'lan'
 	option ra_management '1'
 	option ignore '1'
 
-config dhcp 'wlan'
-	option interface 'wlan'
+config dhcp 'lan'
+	option interface 'lan'
 	option dhcp-range '10.10.10.100,10.10.10.150,12h'
 

@@ -11,8 +11,8 @@ config wifi-device 'wlan0'
 	list ht_capab 'DSSS_CCK-40'
 
 config wifi-iface
-	option device 'wlan0'
-	option network 'wlan'
+	option device 'radio0'
+	option network 'lan'
 	option mode 'ap'
 	option ssid '穿山甲'
 	option encryption 'psk2+tkip+aes'
