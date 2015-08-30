@@ -9,11 +9,11 @@ if [[ -h $network_conf ]]; then
     old_target=$(readlink $network_conf |sed 's:.*\.::')
 fi
 
-if [[ $old_target = "ap" ]] || [[ -z $old_target ]]; then
-    target='router'
-else
-    target='ap'
-fi
+case $old_target in
+    ap     ) target=client  ;;
+    client ) target=router  ;;
+    router ) target=ap      ;;
+esac
 
 logger "===== enabling $target mode ====="
 
