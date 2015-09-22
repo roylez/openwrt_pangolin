@@ -19,7 +19,6 @@ config dnsmasq
 
 config dhcp 'lan'
 	option interface 'lan'
-	option dhcp-range '10.10.10.100,10.10.10.150,12h'
 	option dhcpv6 'server'
 	option ra 'server'
 
@@ -31,4 +30,3 @@ config odhcpd 'odhcpd'
 	option maindhcp '0'
 	option leasefile '/tmp/hosts/odhcpd'
 	option leasetrigger '/usr/sbin/odhcpd-update'
-

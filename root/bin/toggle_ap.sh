@@ -13,6 +13,7 @@ case $old_target in
     ap     ) target=client  ;;
     client ) target=router  ;;
     router ) target=ap      ;;
+    * ) target=ap	    ;;
 esac
 
 logger "===== enabling $target mode ====="
