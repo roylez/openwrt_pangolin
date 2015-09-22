@@ -20,7 +20,7 @@
 
 这里记录了我在`Nexx WT3020`上用部署无痛自动翻墙路由的配置。对于GFW的两种屏蔽方式分别做了如下处理：
 
-**DNS污染**：由于目前GFW的DNS污染完全是针对UDP，所以只需要用pdnsd去查询一个境外未被污染的支持TCP查询的DNS即可。
+**DNS污染**：由于目前GFW的DNS污染完全是针对UDP，所以只需要用unbound去查询一个境外未被污染的支持TCP查询的DNS即可。
 默认使用南韩电信DNS。因为dnsmaq可以对DNS查询进行缓存，所以我并没有对于国内国外IP分别用不同的DNS，速度上影响不大，
 但是配置可以简单很多。
 
@@ -34,7 +34,7 @@
 安装
 ========
 
-1. 安装pdnsd、ipset和shadowsocks，pdns/ipset可以直接用`opkg install pdnsd ipset`安装，但是shadowsocks请自行[下载][2]
+1. 安装unbound、ipset和shadowsocks，unbound/ipset可以直接用`opkg install unbound ipset`安装，但是shadowsocks请自行[下载][2]
 
 2. 编辑`etc/shadowsocks.json`，**填入你的shadowsocks的服务器相关信息**，注意如果你更改了本地端口，
 那么在`firewall.user`中也要做出相应修改，一般说来你不需要修改本地端口。
@@ -51,10 +51,10 @@
 
         scp -rp etc root root@OPENWRT_ADDRESS:/
 
-8. 确保`firewall`,`pdnsd`,`shadowsocks`在启动时自动运行
+8. 确保`firewall`,`unbound`,`shadowsocks`在启动时自动运行
 
         /etc/init.d/firewall enable
-        /etc/init.d/pdnsd enable
+        /etc/init.d/unbound enable
         /etc/init.d/shadowsocks enable
 
 9. 重启动路由器，可以拔电源或者登陆后运行`reboot`。
