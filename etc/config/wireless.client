@@ -1,5 +1,5 @@
 
-config wifi-device 'radio0'
+config wifi-device 'wlan0'
 	option type 'mac80211'
 	option path 'platform/ar933x_wmac'
 	option hwmode '11ng'
@@ -11,7 +11,7 @@ config wifi-device 'radio0'
 	list ht_capab 'DSSS_CCK-40'
 
 config wifi-iface
-	option device   radio0
+	option device   wlan0
 	option network  lan
 	option mode     ap
 	option ssid     '穿山甲_C'
@@ -19,7 +19,7 @@ config wifi-iface
 	option key      '88888888'
 
 config wifi-iface
-        option device   radio0
+        option device   wlan0
         option network  wan
         option mode     sta
         option ssid     ZUO

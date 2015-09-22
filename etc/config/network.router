@@ -20,7 +20,7 @@ config interface 'wan'
 
 # wifi interface static as gateway wireless clients
 config interface 'lan'
-	option ifname 'radio0'
+	option ifname 'wlan0'
 	option proto 'static'
 	option ipaddr '10.10.10.1'
 	option netmask '255.255.255.0'
