@@ -29,5 +29,4 @@ config dhcp 'wan'
 
 config dhcp 'lan'
 	option interface 'lan'
-	option dhcp-range '10.10.10.100,10.10.10.150,12h'
 
