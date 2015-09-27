@@ -29,9 +29,6 @@ done
 # now add set to rules
 iptables -t nat -A SHADOWSOCKS -m set --match-set no_proxy dst -j RETURN
 
-# bypass DNS queries
-iptables -t nat -A SHADOWSOCKS --ssport 53 -j RETURN
-
 # Anything else should be redirected to shadowsocks's local port
 iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
 
