@@ -6,7 +6,7 @@ SERVICE_USE_PID=1
 SERVICE_WRITE_PID=1
 SERVICE_DAEMONIZE=1
 
-CONFIG=/etc/shadowsocks.json
+CONFIG=/root/config/shadowsocks.json
 
 start() {
 	#service_start /usr/bin/ss-local -c $CONFIG -b 0.0.0.0

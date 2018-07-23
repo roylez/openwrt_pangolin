@@ -22,7 +22,7 @@ ipset add no_proxy 224.0.0.0/4
 ipset add no_proxy 240.0.0.0/4
 
 # Ignore China IP address
-for i in $(cat /etc/china.list) ; do
+for i in $(cat /root/config/china.list) ; do
     ipset add no_proxy $i
 done
 

@@ -1,0 +1,9 @@
+{
+    "server":         "SHADOWSOCKS_SERVER_IP",
+    "server_port":    8388,
+    "local_address":  "::",
+    "local_port":     1080,
+    "password":       "SHADOWSOCKS_PASSWORD",
+    "timeout":        60,
+    "method":         "aes-128-gcm"
+}
