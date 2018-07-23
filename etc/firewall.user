@@ -1,15 +1,15 @@
 #!/bin/sh
 
-#create a new chain named SHADOWSOCKS
-iptables -t nat -N SHADOWSOCKS
+#create a new chain named BREAKWALL
+iptables -t nat -N BREAKWALL
 
 #create no_proxy ipset
 ipset -exist create no_proxy hash:net
 ipset flush no_proxy
 
-# Ignore your shadowsocks server's addresses
+# Ignore your proxy server's addresses (comma separated)
 # It's very IMPORTANT, just be careful.
-iptables -t nat -A SHADOWSOCKS -d SHADOWSOCKS_SERVER_IP -j RETURN
+iptables -t nat -A BREAKWALL -d PROXY_SERVER_IP -j RETURN
 
 # Ignore LANs IP address
 ipset add no_proxy 0.0.0.0/8
@@ -27,10 +27,10 @@ for i in $(cat /root/config/china.list) ; do
 done
 
 # now add set to rules
-iptables -t nat -A SHADOWSOCKS -m set --match-set no_proxy dst -j RETURN
+iptables -t nat -A BREAKWALL -m set --match-set no_proxy dst -j RETURN
 
-# Anything else should be redirected to shadowsocks's local port
-iptables -t nat -A SHADOWSOCKS -p tcp -j REDIRECT --to-ports 1080
+# Anything else should be redirected to proxy's local port
+iptables -t nat -A BREAKWALL -p tcp -m multiport --destination-ports 80,443 -j REDIRECT --to-ports 1080
 
 # Apply the rules
-iptables -t nat -A PREROUTING -p tcp -j SHADOWSOCKS
+iptables -t nat -A PREROUTING -p tcp -j BREAKWALL

@@ -1,0 +1,60 @@
+{
+  "log": {
+    "loglevel": "info"
+  },
+  "inbound": {
+    "port": 1080,
+    "listen": "::",
+    "protocol": "dokodemo-door",
+    "sniffing": {
+        "enabled": false,
+        "destOverride": ["tls", "http"]
+    },
+    "settings": {
+      "network": "tcp,udp",
+      "followRedirect": true
+    }
+  },
+  "outbound": {
+    "protocol": "vmess",
+    "settings": {
+      "vnext": [
+        {
+          "address": "V2RAY_SERVER_IP",
+          "port": 12345,
+          "users": [{
+            "id": "8bf865e4-462c-42c7-9f80-75e59be8b383",
+            "alterId": 32,
+            "security": "aes-128-gcm"
+          }]
+        }
+      ]
+    },
+    "streamSettings": {
+      "network": "tcp"
+    },
+    "mux": {
+      "enabled": true,
+      "concurrency": 8
+    }
+  },
+
+  "outboundDetour": [{
+    "tag": "direct",
+    "protocol": "freedom",
+    "settings": {}
+  }],
+
+  "routing": {
+    "strategy": "rules",
+    "settings": {
+      "rules": [
+        {
+          "type": "field",
+          "domain": "geosite:cn",
+          "outboundTag": "direct"
+        }
+      ]
+    }
+  }
+}
