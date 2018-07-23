@@ -16,6 +16,7 @@ config dnsmasq
 	# option resolvfile '/tmp/resolv.conf.auto'
 	option noresolv '1'
 	list server '127.0.0.1#1053'
+	list server '::1#1053'
 
 config dhcp 'lan'
 	option interface 'lan'
