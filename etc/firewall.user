@@ -3,13 +3,13 @@
 #create a new chain named BREAKWALL
 iptables -t nat -N BREAKWALL
 
-#create no_proxy ipset
-ipset -exist create no_proxy hash:net
-ipset flush no_proxy
-
 # Ignore your proxy server's addresses (comma separated)
 # It's very IMPORTANT, just be careful.
 iptables -t nat -A BREAKWALL -d PROXY_SERVER_IP -j RETURN
+
+#create no_proxy ipset
+ipset -exist create no_proxy hash:net
+ipset flush no_proxy
 
 # Ignore LANs IP address
 ipset add no_proxy 0.0.0.0/8
@@ -30,7 +30,19 @@ done
 iptables -t nat -A BREAKWALL -m set --match-set no_proxy dst -j RETURN
 
 # Anything else should be redirected to proxy's local port
-iptables -t nat -A BREAKWALL -p tcp -m multiport --destination-ports 80,443 -j REDIRECT --to-ports 1080
+iptables -t nat -A BREAKWALL -p tcp -j REDIRECT --to-ports 1080
 
 # Apply the rules
-iptables -t nat -A PREROUTING -p tcp -j BREAKWALL
+iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80,443 -j BREAKWALL
+# Redirect unbound's TCP DNS queries
+iptables -t nat -A OUTPUT -p tcp --dport 53 -j BREAKWALL
+
+## If your kernel supports TPROXY, uncomment the following to enable udp redirecting
+# iptables -t mangle -N BREAKWALL
+## Add UDP rules
+# ip route add local default dev lo table 100
+# ip rule add fwmark 1 lookup 100
+# iptables -t mangle -A BREAKWALL -p udp -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
+## Apply UDP rules
+# iptables -t mangle -A PREROUTING -p udp --dport 53 -j BREAKWALL
+# iptables -t mangle -A OUTPUT -p udp --dport 53 -j BREAKWALL
