@@ -151,6 +151,8 @@ DNS相关
             so-reuseport: yes   # 线程数>1时开启
             port: 1053
             tcp-upstream: yes   # 使用TCP请求
+            # 向所有DNS服务器发送edns-client-subnet，优化解析结果
+            send-client-subnet: 0.0.0.0/0  # 需要unbound >= 1.6.7
 
         # 读取china-dns配置，对国内音视频网站使用DNSPod解析
         include: "/etc/unbound/china-dns.conf"
