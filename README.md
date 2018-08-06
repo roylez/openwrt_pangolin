@@ -74,7 +74,7 @@ IP规则用了[精简过的国内IP段][china-list-gist]。如果需要自己生
     - [shadowsocks-libev][openwrt-ss]：根据路由器CPU架构下载对应的包，在路由器上执行`opkg install ./shadowsocks-libev_VERSION_ARCH.ipk`即可安装。
     - [v2ray][v2ray-release]：根据CPU架构下载对应的包到本地，解压后上传到`/root/v2ray`。如需精简体积，可尝试[自行编译][build-v2ray]。
 
-    **注意：** `v2ray`使用Go实现，启动后可以轻松吃掉上百MB内存，内存不足256MB的路由器 **强烈不建议**使用。
+    **注意：** `v2ray`根据配置不同，内存占用在20M~100M不等，内存少于128MB的路由器不建议使用。
 
 3. 配置代理工具：编辑`etc/shadowsocks.json`或`root/v2ray.json`。不建议修改本地端口（默认 **1080**），否则`firewall.user`中也要做出相应修改。
 
