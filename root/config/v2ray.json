@@ -1,6 +1,6 @@
 {
   "log": {
-    "loglevel": "info"
+    "loglevel": "warning"
   },
   "inbound": {
     "port": 1080,
@@ -34,7 +34,7 @@
       "network": "tcp"
     },
     "mux": {
-      "enabled": true,
+      "enabled": false,
       "concurrency": 8
     }
   },

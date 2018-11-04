@@ -1,13 +1,18 @@
 #!/bin/sh
 
-#create a new chain named BREAKWALL
+# Create new chains named BREAKWALL
 iptables -t nat -N BREAKWALL
+iptables -t mangle -N BREAKWALL
+iptables -t mangle -N BREAKWALL_SELF
 
 # Ignore your proxy server's addresses (comma separated)
 # It's very IMPORTANT, just be careful.
 iptables -t nat -A BREAKWALL -d PROXY_SERVER_IP -j RETURN
 
-#create no_proxy ipset
+
+##### Setup IP range which should not be proxied.
+
+# Create no_proxy ipset
 ipset -exist create no_proxy hash:net
 ipset flush no_proxy
 
@@ -26,23 +31,33 @@ for i in $(cat /root/config/china.list) ; do
     ipset add no_proxy $i
 done
 
-# now add set to rules
+# Add no_proxy ipset to rules
 iptables -t nat -A BREAKWALL -m set --match-set no_proxy dst -j RETURN
+iptables -t mangle -A BREAKWALL -m set --match-set no_proxy dst -j RETURN
+iptables -t mangle -A BREAKWALL_SELF -m set --match-set no_proxy dst -j RETURN
 
-# Anything else should be redirected to proxy's local port
+
+##### NAT settings for TCP traffic (HTTP, HTTPS)
+
+# Redirect traffic to proxy's local port
 iptables -t nat -A BREAKWALL -p tcp -j REDIRECT --to-ports 1080
 
-# Apply the rules
+# Apply TCP rules
 iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80,443 -j BREAKWALL
-# Redirect unbound's TCP DNS queries
-iptables -t nat -A OUTPUT -p tcp --dport 53 -j BREAKWALL
+## Redirect unbound's TCP DNS queries
+# iptables -t nat -A OUTPUT -p tcp --dport 53 -j BREAKWALL
 
-## If your kernel supports TPROXY, uncomment the following to enable udp redirecting
-# iptables -t mangle -N BREAKWALL
-## Add UDP rules
-# ip route add local default dev lo table 100
-# ip rule add fwmark 1 lookup 100
-# iptables -t mangle -A BREAKWALL -p udp -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
-## Apply UDP rules
-# iptables -t mangle -A PREROUTING -p udp --dport 53 -j BREAKWALL
-# iptables -t mangle -A OUTPUT -p udp --dport 53 -j BREAKWALL
+
+##### TProxy settings for UDP traffic (DNS)
+
+# Add UDP rules
+# Make sure iptables-mod-tproxy and kmod-ipt-tproxy are installed via opkg.
+ip route add local default dev lo table 100
+ip rule add fwmark 1 lookup 100
+iptables -t mangle -A BREAKWALL -p udp -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
+# TPROXY supports PREROUTING only
+iptables -t mangle -A BREAKWALL_SELF -p udp --dport 53 -j MARK --set-mark 1
+
+# Apply UDP rules
+iptables -t mangle -A PREROUTING -p udp --dport 53 -j BREAKWALL
+iptables -t mangle -A OUTPUT -p udp --dport 53 -j BREAKWALL_SELF
