@@ -70,6 +70,7 @@ IP规则用了精简过的国内IP段。如果需要自己生成，可以执行`
 1. 安装基础依赖，通过LuCI页面安装或者`ssh root@192.168.1.1`登录路由器执行命令（假定路由器IP`192.168.1.1`）：
 
     ``` shell
+    opkg update
     opkg install ipset ca-certificates iptables-mod-tproxy unbound dnscrypt-proxy
     ```
 
@@ -120,7 +121,7 @@ IP规则用了精简过的国内IP段。如果需要自己生成，可以执行`
 DNS套件
 -------
 
-**方案1**
+**<details><summary>方案1</summary>**
 
 1. `etc/config/dhcp`: 设置`dnsmasq`将DNS查询转发到`ChinaDNS`的监听端口（2053）。主要改动如下：
     ``` conf
@@ -129,8 +130,9 @@ DNS套件
     list server '::1#2053'
     ```
 2. `etc/config/chinadns`: `ChinaDNS`相关设置。国内IP段使用了精简IP列表`/root/config/china.list`，可以自行换回默认列表`/etc/chinadns_chnroute.txt`
+</details>
 
-**方案2**
+**<details><summary>方案2</summary>**
 
 1. `etc/config/dhcp`: 设置`dnsmasq`将DNS查询转发到`unbound`的监听端口（1053）。主要改动如下：
     ``` conf
@@ -174,6 +176,7 @@ DNS套件
             forward-addr: 119.29.29.29
         ```
 3. `etc/config/dnscrypt-proxy`: DNScrypt配置，默认监听5353和5454两个端口。如果不使用需要删除`unbound.conf`中的对应转发目的地。
+</details>
 
 <a name="port-forwarding"></a>
 端口转发配置
