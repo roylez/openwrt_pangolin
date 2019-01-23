@@ -41,11 +41,11 @@ DNS污染
 对于问题2，我们提供了两套方案：
 
 1. 使用[ChinaDNS][chinadns]，它的原理是同时请求境内境外DNS服务器，并根据一个简单假设决定采用哪个结果。  
-    优点是方便，几乎不需要任何额外工作即可得到满意的查询结果，而且就算哪天代理被封锁了，也不会影响国内域名的正常解析；  
+    优点是方便，速度快且防污染（无需通过代理）。  
     缺陷是境内DNS服务器会收到你的所有域名查询请求。
 2. 使用`unbound`作为DNS服务器，通过维护一个国内常用域名列表分流DNS查询。  
     优点是配置灵活，支持自定义结果缓存策略，支持TCP、TLS等多种模式；  
-    缺点也很明显，你要维护一个常用的国内域名列表才能优化国内的查询结果。听起来还算可以，毕竟常去的网站就那么几个不是吗？但如果你亲自尝试过就知道，真正影响网速体验的其实是提供图片视频加速服务的大量CDN域名，而且这些域名往往还变化多端。
+    缺点是DNS解析速度受代理速度影响；而且如果想优化国内域名查询的话，还需要维护一个国内域名列表。听起来不难，毕竟常去的网站就那么几个不是吗？但如果亲自尝试过就知道，真正影响网速体验的其实是提供图片视频加速的海量CDN域名。
 
 为了节省你宝贵的时间做更多有意义的事情，我们推荐使用**方案1**。如果你非常介意隐私，其实可以结合这两个方案：
 让`ChinaDNS`作为`unbound`的上游DNS服务，并在`unbound`中维护一个境外域名列表，符合规则的域名查询直接请求境外可信DNS服务器即可。
@@ -175,7 +175,8 @@ DNS套件
             name: "qq.com."
             forward-addr: 119.29.29.29
         ```
-3. `etc/config/dnscrypt-proxy`: DNScrypt配置，默认监听5353和5454两个端口。如果不使用需要删除`unbound.conf`中的对应转发目的地。
+3. `etc/firewall.user` 需要取消对UDP转发配置的注释。
+4. `etc/config/dnscrypt-proxy`: DNScrypt配置，默认监听5353和5454两个端口。如果不使用需要删除`unbound.conf`中的对应转发目的地。
 </details>
 
 <a name="port-forwarding"></a>
@@ -246,6 +247,7 @@ OpenWRT 17.01, 18.06 on:
 参考
 ====
 
+- [使用iptables透明代理TCP与UDP by 依云's Blog][transparent-proxy]
 - [内核透明代理模块TPROXY](https://www.kernel.org/doc/Documentation/networking/tproxy.txt)
 - [shadowsocks-libev透明代理设置][ss-tproxy]
 - [unbound中不同forward-addr的选择策略][unbound-forward]
@@ -263,3 +265,4 @@ OpenWRT 17.01, 18.06 on:
 [unbound-forward]: https://nlnetlabs.nl/pipermail/unbound-users/2018-January/005054.html
 [chinadns]: https://github.com/shadowsocks/ChinaDNS
 [chinadns-openwrt]: https://github.com/aa65535/openwrt-chinadns
+[transparent-proxy]: https://blog.lilydjwg.me/2018/7/16/transparent-proxy-for-tcp-and-udp-with-iptables.213139.html

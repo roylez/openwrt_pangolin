@@ -3,7 +3,6 @@
 # Create new chains named BREAKWALL
 iptables -t nat -N BREAKWALL
 iptables -t mangle -N BREAKWALL
-iptables -t mangle -N BREAKWALL_SELF
 
 # Ignore your proxy server's addresses (comma separated)
 # It's very IMPORTANT, just be careful.
@@ -34,7 +33,6 @@ done
 # Add no_proxy ipset to rules
 iptables -t nat -A BREAKWALL -m set --match-set no_proxy dst -j RETURN
 iptables -t mangle -A BREAKWALL -m set --match-set no_proxy dst -j RETURN
-iptables -t mangle -A BREAKWALL_SELF -m set --match-set no_proxy dst -j RETURN
 
 
 ##### NAT settings for TCP traffic (HTTP, HTTPS)
@@ -48,16 +46,23 @@ iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80,443 -j BREAKWALL
 # iptables -t nat -A OUTPUT -p tcp --dport 53 -j BREAKWALL
 
 
-##### TProxy settings for UDP traffic (DNS)
-
-# Add UDP rules
-# Make sure iptables-mod-tproxy and kmod-ipt-tproxy are installed via opkg.
-ip route add local default dev lo table 100
-ip rule add fwmark 1 lookup 100
-iptables -t mangle -A BREAKWALL -p udp -j TPROXY --on-port 1080 --tproxy-mark 0x01/0x01
-# TPROXY supports PREROUTING only
-iptables -t mangle -A BREAKWALL_SELF -p udp --dport 53 -j MARK --set-mark 1
-
-# Apply UDP rules
-iptables -t mangle -A PREROUTING -p udp --dport 53 -j BREAKWALL
-iptables -t mangle -A OUTPUT -p udp --dport 53 -j BREAKWALL_SELF
+# # Uncomment the following lines if you need redirect DNS queries via proxy
+# ##### TProxy settings for DNS UDP traffic
+# 
+# ## FIXME: ip rule would be flushed somewhere:
+# ## https://forum.openwrt.org/t/ip-rule-in-etc-firewall-user-is-flushed-somewhere/29797
+# # Add route table 100, set device lo as default gateway
+# ip route add local default dev lo table 100
+# 
+# # Packets who has mark 1 would be sent via table 100
+# ip rule add fwmark 1 lookup 100
+# 
+# # Make sure iptables-mod-tproxy and kmod-ipt-tproxy are installed via opkg.
+# # Target TPROXY is only valid in mangle table, PREROUTING chain
+# iptables -t mangle -A BREAKWALL -p udp -j TPROXY --on-port 1080 --tproxy-mark 1/1
+# 
+# # Redirect PREROUTING DNS packets to BREAKWALL
+# iptables -t mangle -A PREROUTING -p udp --dport 53 -j BREAKWALL
+# 
+# # Mark DNS packets to trigger reroute check, then they would be processed in PREROUTING
+# iptables -t mangle -A OUTPUT -p udp --dport 53 -j MARK --set-mark 1
