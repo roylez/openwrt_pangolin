@@ -188,7 +188,7 @@ DNS套件
     2. 忽略目的地址为代理服务器的IP数据包；
     3. 创建`ipset`表，设置忽略内网地址和来自`china.list`的国内IP段；
     4. 其他路由到此规则的流量统统转发到**1080**端口
-    5. 将该规则应用到所有目标端口为TCP 80和443的局域网流量（HTTP和HTTPS流量），以及目标端口为UDP 53的局域网和路由器自身流量（DNS查询）。
+    5. 将该规则应用到所有目标端口为TCP 80和443的局域网流量（HTTP和HTTPS流量），以及目标端口为TCP/UDP 53的局域网和路由器自身流量（用于方案2的DNS查询）。
 
     **注意：** 如果你的转发规则没有生效，检查`/etc/config/firewall`，确保包含如下配置：
     ``` conf
@@ -251,6 +251,8 @@ OpenWRT 17.01, 18.06 on:
 - [内核透明代理模块TPROXY](https://www.kernel.org/doc/Documentation/networking/tproxy.txt)
 - [shadowsocks-libev透明代理设置][ss-tproxy]
 - [unbound中不同forward-addr的选择策略][unbound-forward]
+- [OpenWRT策略路由配置Wiki](https://openwrt.org/docs/guide-user/network/ip_rules)
+- [OpenWRT路由表配置Wiki](https://openwrt.org/docs/guide-user/network/routes_configuration)
 
 
 [ss-libev]: https://github.com/shadowsocks/shadowsocks-libev

@@ -42,20 +42,21 @@ iptables -t nat -A BREAKWALL -p tcp -j REDIRECT --to-ports 1080
 
 # Apply TCP rules
 iptables -t nat -A PREROUTING -p tcp -m multiport --dports 80,443 -j BREAKWALL
-## Redirect unbound's TCP DNS queries
-# iptables -t nat -A OUTPUT -p tcp --dport 53 -j BREAKWALL
+# Redirect TCP DNS queries initiated by router itself
+iptables -t nat -A OUTPUT -p tcp --dport 53 -j BREAKWALL
 
 
 # # Uncomment the following lines if you need redirect DNS queries via proxy
 # ##### TProxy settings for DNS UDP traffic
 # 
-# ## FIXME: ip rule would be flushed somewhere:
-# ## https://forum.openwrt.org/t/ip-rule-in-etc-firewall-user-is-flushed-somewhere/29797
 # # Add route table 100, set device lo as default gateway
 # ip route add local default dev lo table 100
 # 
 # # Packets who has mark 1 would be sent via table 100
-# ip rule add fwmark 1 lookup 100
+# ## ip rule does not take effect here. Place it in /etc/config/network
+# ## https://forum.openwrt.org/t/ip-rule-in-etc-firewall-user-is-flushed-somewhere/29797
+# #ip rule add fwmark 1 lookup 100
+# source /root/bin/set_iprule.sh
 # 
 # # Make sure iptables-mod-tproxy and kmod-ipt-tproxy are installed via opkg.
 # # Target TPROXY is only valid in mangle table, PREROUTING chain
