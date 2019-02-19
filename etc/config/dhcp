@@ -15,7 +15,6 @@ config dnsmasq
 	option leasefile '/tmp/dhcp.leases'
 	# option resolvfile '/tmp/resolv.conf.auto'
 	option noresolv '1'
-	list server '127.0.0.1#2053'
 	list server '::1#2053'
 
 config dhcp 'lan'
